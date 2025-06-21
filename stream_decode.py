@@ -1,0 +1,136 @@
+import os
+import sys
+# from argparse import ArgumentParser
+from loguru import logger
+
+import numpy as np
+import torch
+# import wandb
+from simple_parsing import ArgumentParser
+
+
+from arguments import ModelParams, PipelineParams, OptimizationParams
+from pipeline.stream_encode import training
+from utils.general_utils import safe_state
+from utils.log_utils import prepare_output_and_logger
+
+
+
+
+if __name__ == "__main__":
+    # Set up command line argument parser
+    parser = ArgumentParser(add_config_path_arg=True)
+    # lp = ModelParams(parser)
+    # op = OptimizationParams(parser)
+    # pp = PipelineParams(parser)
+    parser.add_argument('--ip', type=str, default="127.0.0.1")
+    parser.add_argument('--port', type=int, default=6009)
+    parser.add_argument('--debug_from', type=int, default=-1)
+    parser.add_argument('--detect_anomaly', action='store_true', default=False)
+    parser.add_argument('--warmup', action='store_true', default=False)
+    parser.add_argument('--use_wandb', action='store_true', default=False)
+    # parser.add_argument("--test_iterations", nargs="+", type=int, default=[11_000, 15_000, 20_000, 25_000, 29_000, 30_000])
+    parser.add_argument("--test_iterations", nargs="+", type=int, default=[30_000])
+    # parser.add_argument("--save_iterations", nargs="+", type=int, default=[11_000, 15_000, 20_000, 25_000, 29_000, 30_000])
+    parser.add_argument("--save_iterations", nargs="+", type=int, default=[30_000])
+    parser.add_argument("--quiet", action="store_true")
+    parser.add_argument("--checkpoint_iterations", nargs="+", type=int, default=[])
+    parser.add_argument("--start_checkpoint", type=str, default = None)
+    parser.add_argument("--gpu", type=str, default = '-1')
+    parser.add_argument("--tag", type=str, default='')
+
+
+    parser.add_arguments(ModelParams, dest="model")
+    parser.add_arguments(PipelineParams, dest="pipeline")
+    parser.add_arguments(OptimizationParams, dest="optimization")
+
+    args = parser.parse_args(sys.argv[1:])
+    args.save_iterations.append(args.optimization.iterations)
+
+    lp: ModelParams = args.model
+    pp: PipelineParams = args.pipeline
+    op: OptimizationParams = args.optimization
+
+
+    # enable logging
+
+    model_path = pp.model_path
+    os.makedirs(model_path, exist_ok=True)
+
+    # logger = get_logger(model_path)
+    #
+    # logger = loguru.
+    logger.add(model_path + '/output.log')
+
+
+    logger.info(f'args: {args}')
+    logger.info(f'running tag: {args.tag}')
+
+    if args.gpu != '-1':
+        os.environ['CUDA_VISIBLE_DEVICES'] = str(args.gpu)
+        os.system("echo $CUDA_VISIBLE_DEVICES")
+        logger.info(f'using GPU {args.gpu}')
+
+    '''try:
+        saveRuntimeCode(os.path.join(args.model_path, 'backup'))
+    except:
+        logger.info(f'save code failed~')'''
+
+    dataset = pp.source_path.split('/')[-1]
+    exp_name = pp.model_path.split('/')[-2]
+
+    # if args.use_wandb:
+    #     wandb.login()
+    #     run = wandb.init(
+    #         # Set the project where this run will be logged
+    #         project=f"Scaffold-GS-{dataset}",
+    #         name=exp_name,
+    #         # Track hyperparameters and run metadata
+    #         settings=wandb.Settings(start_method="fork"),
+    #         config=vars(args)
+    #     )
+    # else:
+    #     wandb = None
+    wandb=None
+    tb_writer = prepare_output_and_logger(args, pp)
+
+    logger.info("Optimizing " + pp.model_path)
+
+    # Initialize system state (RNG)
+    safe_state(args.quiet)
+
+    # Start GUI server, configure and run training
+    args.port = np.random.randint(10000, 20000)
+    # network_gui.init(args.ip, args.port)
+    torch.autograd.set_detect_anomaly(args.detect_anomaly)
+
+    # training
+    x_bound_min, x_bound_max = training(
+        # args_param=args,
+        model_params=lp,
+        opt=op,
+        pipe=pp,
+        dataset_name=dataset,
+        testing_iterations=args.test_iterations,
+        saving_iterations=args.save_iterations,
+        checkpoint_iterations=args.checkpoint_iterations,
+        checkpoint=args.start_checkpoint,
+        tb_writer=tb_writer,
+        debug_from=args.debug_from)
+    # if args.warmup:
+    #     logger.info("\n Warmup finished! Reboot from last checkpoints")
+    #     new_ply_path = os.path.join(args.model_path, f'point_cloud/iteration_{args.iterations}', 'point_cloud.ply')
+    #     x_bound_min, x_bound_max = training(args, lp.extract(args), op.extract(args), pp.extract(args), dataset,  args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from, wandb=wandb, logger=logger, ply_path=new_ply_path)
+
+    # All done
+    logger.info("Training complete.")
+
+    # rendering
+    # logger.info(f'\nStarting Rendering~')
+    # visible_count = render_sets(args, lp.extract(args), -1, pp.extract(args), wandb=wandb, logger=logger, x_bound_min=x_bound_min, x_bound_max=x_bound_max)
+    # logger.info("\nRendering complete.")
+    #
+    # # calc metrics
+    # logger.info("\n Starting evaluation...")
+    # evaluate(args.model_path, visible_count=visible_count, wandb=wandb, logger=logger)
+    # logger.info("\nEvaluating complete.")

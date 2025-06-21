@@ -1,0 +1,21 @@
+
+save_iterations: [10000000, ]
+checkpoint_iterations: [ 15000, 40000 ]
+
+model:
+
+  voxel_size: 0.001
+  update_init_factor: 16
+  update_hierarchy_factor: 4
+  update_depth: 3
+  # voxel_size * update_init_factor 是增长anchor的最大体素大小
+  # voxel_size * update_init_factor / (update_hierarchy_factor**(update_depth-1))是增长anchor的最小体素大小
+  grid_feature_dim: 8
+  threshold: 0.05
+
+optimization:
+  iterations: 40_000
+  lmbda: 0.004
+  init_anchor_num: 100_000
+  opacity_reg: 0
+

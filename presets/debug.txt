@@ -1,0 +1,68 @@
+--source_path
+/data/intern7/dataset/uvg_cube/Bosphorus/
+--eval
+--lod
+30
+--voxel_size
+0
+--update_init_factor
+128
+--iterations
+30_000
+--model_path
+/data/intern7/studio/hac/output/uvg/bosphorus_dev/0.004
+--lmbda
+0.004
+
+
+========== decode ===========
+
+--source_path
+/data/intern7/dataset/uvg_cube/Bosphorus
+--eval
+--lod
+30
+--update_init_factor
+128
+--iterations
+30_000
+--model_path
+/data/intern7/studio/hac/output/uvg/bosphorus_fit_only/0.004test
+--lmbda
+0.004
+--checkpoint_iterations
+100
+1000
+2000
+
+
+--source_path /data/intern7/dataset/uvg_cube/Bosphorus
+--eval --lod 30 --voxel_size 0
+--update_init_factor 128 --iterations 40_000
+--model_path /data/intern7/studio/hac/output/uvg/bosphorus_20240721/0.004_ne
+ --lmbda 0.004 --start_checkpoint /data/intern7/studio/hac/output/uvg/bosphorus_20240721/0.004_ne/chkpnt15000.pth
+ --checkpoint_iterations 16000 17000 18000
+
+
+ --source_path
+/data/intern7/dataset/uvg_cube/Bosphorus
+--eval
+--lod
+30
+--voxel_size
+0
+--update_init_factor
+128
+--iterations
+40_000
+--model_path
+/data/intern7/studio/hac/output/uvg/bosphorus_dev/0.004_0721
+--lmbda
+0.004
+--init_anchor_num
+100_000
+--checkpoint_iterations
+1000
+2000
+3000
+4000

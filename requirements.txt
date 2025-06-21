@@ -1,0 +1,7 @@
+torch
+plyfile
+torchvision
+einops
+lpips
+loguru
+simple-parsing
