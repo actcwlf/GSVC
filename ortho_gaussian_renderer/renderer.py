@@ -3,7 +3,7 @@ import time
 import torch
 
 from common.base import RenderResults
-from py_module.cuda_ortho_gaussian_rasterizer import GaussianRasterizationSettings, GaussianRasterizer
+from diff_gaussian_rasterization.cuda_ortho_gaussian_rasterizer import GaussianRasterizationSettings, GaussianRasterizer
 
 from frame_cube.frame import Frame
 from scene.gaussian_model import GaussianModel
@@ -69,7 +69,7 @@ def render(
         y_min=frame.y_min,
         scale=frame.scale,
         threshold=pc.model_config.threshold,
-        kernel_size=pc.model_config.kernel_size,
+        # kernel_size=pc.model_config.kernel_size,
         bg=bg_color,
         scale_modifier=scaling_modifier,
         # viewmatrix=viewpoint_camera.world_view_transform,

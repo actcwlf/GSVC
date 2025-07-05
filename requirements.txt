@@ -5,3 +5,4 @@ einops
 lpips
 loguru
 simple-parsing
+pyglm

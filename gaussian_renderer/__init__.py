@@ -18,10 +18,10 @@ import torch.nn.functional as nnf
 from einops import repeat
 
 import math
-from diff_gaussian_rasterization import GaussianRasterizationSettings, GaussianRasterizer
+from diff_gaussian_rasterization.cuda_ortho_gaussian_rasterizer import GaussianRasterizationSettings, GaussianRasterizer
 from scene.gaussian_model import GaussianModel
 from utils.encodings import STE_binary, STE_multistep
-from py_module.gaussian_rasterizer import GaussianRasterizer as PyGaussianRasterizer
+# from py_module.gaussian_rasterizer import GaussianRasterizer as PyGaussianRasterizer
 
 def generate_neural_gaussians(viewpoint_camera, pc : GaussianModel, visible_mask=None, is_training=False, step=0):
     ## view frustum filtering for acceleration

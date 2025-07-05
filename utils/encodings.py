@@ -20,7 +20,7 @@ import pandas as pd
 
 import _gridencoder as _backend
 
-from common.ans_coder import ANSCoder
+from gsvc_cuda_ans import ANSCoder
 from common.range_coder import RangeCoder
 from utils.compact_container import UInt2List
 from utils.inspector import check_tensor

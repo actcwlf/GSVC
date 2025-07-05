@@ -18,12 +18,12 @@ import torch.nn.functional as nnf
 from einops import repeat
 
 import math
-from py_module.cuda_ortho_gaussian_rasterizer import GaussianRasterizationSettings, GaussianRasterizer
+from diff_gaussian_rasterization.cuda_ortho_gaussian_rasterizer import GaussianRasterizationSettings, GaussianRasterizer
 
 from frame_cube.frame import Frame
 from scene.gaussian_model import GaussianModel
 from utils.encodings import STE_binary, STE_multistep
-from py_module.gaussian_rasterizer import GaussianRasterizer as PyGaussianRasterizer
+# from py_module.gaussian_rasterizer import GaussianRasterizer as PyGaussianRasterizer
 from utils.inspector import check_tensor
 
 
@@ -64,7 +64,7 @@ def prefilter_voxel(
         y_min=frame.y_min,
         scale=frame.scale,
         threshold=pc.model_config.threshold,
-        kernel_size=pc.model_config.kernel_size,
+        # kernel_size=pc.model_config.kernel_size,
         bg=bg_color,
         scale_modifier=scaling_modifier,
         # viewmatrix=viewpoint_camera.world_view_transform,
@@ -79,7 +79,7 @@ def prefilter_voxel(
     )
 
     rasterizer = GaussianRasterizer(raster_settings=raster_settings)
-    py_rasterizer = PyGaussianRasterizer(raster_settings=raster_settings)
+    # py_rasterizer = PyGaussianRasterizer(raster_settings=raster_settings)
 
     means3D = pc.get_anchor
 

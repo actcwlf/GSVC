@@ -41,7 +41,10 @@ class="center">
 cd submodules
 unzip gridencoder.zip
 unzip simple-knn.zip
-cd ..
+cd simple-knn
+python setup.py install
+cd ../gridencoder
+python setup.py install
 ```
 
 2. install other modules
@@ -57,7 +60,7 @@ pip install git+https://github.com/actcwlf/ortho_diff_gaussian_rasterization.git
 For data preparation, please transform original video to frames. The optical flow is obtained from original pre-trained [VideoFlow](https://github.com/XiaoyuShi97/VideoFlow)
 
 Note: Due to our limited computational resources, 
-we estimated the optical flow in batches. We only utilized forward optical flow during our model training.
+we estimated the optical flow in batches and only utilized backward optical flow during our model training.
 
 ## Training
 
