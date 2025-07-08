@@ -29,8 +29,7 @@ ploys deformable Gaussian representations and optical flow guidance to capture
 
 ## Performance
 <p align="left">
-<img src="assets/main.png" width=80% height=80% 
-class="center">
+<img src="assets/main.png" class="center">
 </p>
 
 
